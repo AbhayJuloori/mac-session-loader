@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Session Loader</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div id="warnings-banner" class="warnings-banner hidden"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <h1>Session Loader</h1>
+      <button class="text-button" id="clear-key">Reset Key</button>
+    </header>
+
+    <section class="panels" aria-label="Tools">
+      <article class="panel" id="panel-claude">
+        <div class="panel-header">
+          <div>
+            <h2>Claude</h2>
+            <p id="times-claude">Loading</p>
+          </div>
+          <div class="status">
+            <span class="status-dot" id="dot-claude"></span>
+            <span id="status-label-claude">Loading</span>
+          </div>
+        </div>
+        <div class="expiry-countdown" id="expiry-claude">Set reset time</div>
+        <button class="primary-button" id="start-claude">Start Now</button>
+        <div class="schedule-list" id="schedules-claude"></div>
+        <button class="secondary-button" data-add-tool="claude">+ Add Schedule</button>
+      </article>
+
+      <article class="panel" id="panel-codex">
+        <div class="panel-header">
+          <div>
+            <h2>Codex</h2>
+            <p id="times-codex">Loading</p>
+          </div>
+          <div class="status">
+            <span class="status-dot" id="dot-codex"></span>
+            <span id="status-label-codex">Loading</span>
+          </div>
+        </div>
+        <div class="expiry-countdown" id="expiry-codex">Set reset time</div>
+        <button class="primary-button" id="start-codex">Start Now</button>
+        <div class="schedule-list" id="schedules-codex"></div>
+        <button class="secondary-button" data-add-tool="codex">+ Add Schedule</button>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2>Remote Access</h2>
+      <div class="remote-grid">
+        <article class="remote-card">
+          <div class="remote-title">
+            <span>Claude Remote Control Setup</span>
+            <span class="remote-state">
+              <span class="remote-dot" id="claude-remote-dot"></span>
+              <span id="claude-remote-label">Checking</span>
+            </span>
+          </div>
+          <p>Run this on your Mac, then open Claude Code on the web.</p>
+          <div class="code-row">
+            <code id="claude-remote-cmd">claude remote-control --name "Abhay Mac" --spawn same-dir --permission-mode default</code>
+            <button class="small-button" id="copy-remote">Copy</button>
+          </div>
+          <a href="https://claude.ai/code" target="_blank" rel="noreferrer">Open claude.ai/code</a>
+        </article>
+
+        <article class="remote-card">
+          <div class="remote-title">Codex App</div>
+          <p>Open Codex App on Mac, enable remote connections, then use ChatGPT mobile Codex.</p>
+          <a href="https://chatgpt.com/" target="_blank" rel="noreferrer">Open ChatGPT</a>
+        </article>
+
+        <article class="remote-card hidden" id="terminal-fallback">
+          <div class="remote-title">Browser Terminal</div>
+          <p>Start a session first. Then open ttyd directly or through Tailscale Serve HTTPS.</p>
+          <div class="terminal-links">
+            <a id="terminal-claude-link" target="_blank" rel="noreferrer">Claude Terminal</a>
+            <a id="terminal-codex-link" target="_blank" rel="noreferrer">Codex Terminal</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>History</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Trigger</th>
+              <th>Scheduled</th>
+              <th>Started</th>
+              <th>Status</th>
+              <th>Est. End</th>
+              <th>Workspace</th>
+            </tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h2 id="modal-title">Add Schedule</h2>
+      <form id="schedule-form">
+        <input type="hidden" id="modal-tool" />
+        <input type="hidden" id="modal-job-id" />
+
+        <label>
+          Time
+          <input type="time" id="modal-time" required />
+        </label>
+
+        <label>
+          Frequency
+          <select id="modal-trigger">
+            <option value="daily">Daily</option>
+            <option value="once">Once</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </label>
+
+        <label class="hidden" id="modal-date-row">
+          Date
+          <input type="date" id="modal-date" />
+        </label>
+
+        <fieldset class="hidden" id="modal-days-row">
+          <legend>Days</legend>
+          <div class="days-picker">
+            <label><input type="checkbox" value="0" /> Mon</label>
+            <label><input type="checkbox" value="1" /> Tue</label>
+            <label><input type="checkbox" value="2" /> Wed</label>
+            <label><input type="checkbox" value="3" /> Thu</label>
+            <label><input type="checkbox" value="4" /> Fri</label>
+            <label><input type="checkbox" value="5" /> Sat</label>
+            <label><input type="checkbox" value="6" /> Sun</label>
+          </div>
+        </fieldset>
+
+        <label>
+          Workspace
+          <input type="text" id="modal-workspace" placeholder="/Users/abhayjuloori/" />
+        </label>
+
+        <label>
+          Warm-up prompt
+          <input type="text" id="modal-warmup" placeholder="Reply READY only." />
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" id="cancel-modal">Cancel</button>
+          <button type="submit" class="primary-button">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
