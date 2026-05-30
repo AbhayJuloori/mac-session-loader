@@ -24,6 +24,8 @@
     <dict>
         <key>SESSION_LOADER_KEY</key>
         <string>your-secret-key-here</string>
+        <key>CLAUDE_COMMAND</key>
+        <string>claude --dangerously-skip-permissions</string>
         <key>DATA_DIR</key>
         <string>/Users/YOUR_USERNAME/mac-session-loader</string>
         <key>DEFAULT_WORKSPACE</key>
